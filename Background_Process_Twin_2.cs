@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Threading;
 
 namespace Background_Process_Twins
 {
@@ -8,12 +9,16 @@ namespace Background_Process_Twins
         static void Main(string[] args)
         {
             Background_Process_Twin_2 main_program = new Background_Process_Twin_2();
-            if (main_program.check_processes() == false)
+            while (true)
             {
-                Console.WriteLine("[*] Twin Process Not Alive");
-                main_program.execute_twin_process();
+                //Sleep reduces CPU Usage from 40% down to 2.1%.
+                Thread.Sleep(5000);
+                if (main_program.check_processes() == false)
+                {
+                    Console.WriteLine("[*] Twin Process Dead [1]");
+                    main_program.execute_twin_process();
+                }
             }
-            Console.WriteLine("[*] END");
         }
         // Currently polling. (Bad).
         public bool check_processes()
@@ -22,9 +27,9 @@ namespace Background_Process_Twins
             bool process_alive = false;
             for (int i = 0; i <= allProcesses.Length - 1; i++)
             {
-                Console.WriteLine(allProcesses[i]);
-                if (allProcesses[i].ToString().Contains("Background_Process_Twin"))
+                if (allProcesses[i].ToString().Contains("Background_Process_Twin") && !allProcesses[i].ToString().Contains("2"))
                 {
+                    Console.WriteLine(allProcesses[i].ToString().Substring(27));
                     Console.WriteLine("[*] Twin Process Is Alive [1]");
                     process_alive = true;
                     break;
