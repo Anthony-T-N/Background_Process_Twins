@@ -23,6 +23,7 @@ namespace Background_Process_Twins
                     Console.WriteLine("[*] Twin Process Dead [2]");
                     main_program.execute_twin_process();
                 }
+                /*
                 try
                 {
                     Process[] proc = Process.GetProcessesByName("Taskmgr");
@@ -33,7 +34,7 @@ namespace Background_Process_Twins
                 {
                     Console.WriteLine(ex);
                 }
-           
+                */
             }
         }
         // Currently polling. (Bad).
@@ -41,21 +42,29 @@ namespace Background_Process_Twins
         {
             Process[] allProcesses = Process.GetProcesses();
             bool process_alive = false;
+            int counter = 0;
             for (int i = 0; i <= allProcesses.Length - 1; i++)
             {
-                if (allProcesses[i].ToString().Contains("Background_Process_Twin_2"))
+                if (allProcesses[i].ToString().Contains("Background_Process_Twin"))
                 {
                     Console.WriteLine(allProcesses[i].ToString().Substring(27));
-                    Console.WriteLine("[*] Twin Process Is Alive [2]");
-                    process_alive = true;
-                    break;
+                    Console.WriteLine("[*] Twin Process Is Alive");
+                    counter++;
+                    if (counter == 2)
+                    {
+                        process_alive = true;
+                        break;
+                    }
                 }
             }
             return process_alive;
         }
         public void execute_twin_process()
         {
-            Process.Start(@"---");
+            Process process = new Process();
+            process.StartInfo.FileName = (@"---");
+            //process.StartInfo.CreateNoWindow = false;
+            process.Start();
             Console.WriteLine("[+] Twin Process Executed");
         }
         private void kill_switch()
