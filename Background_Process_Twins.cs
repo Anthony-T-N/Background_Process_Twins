@@ -4,8 +4,9 @@ using System.Threading;
 /*
 https://stackoverflow.com/questions/8455873/how-to-detect-a-process-start-end-using-c-sharp-in-windows
 Planning / Design
-- Read through running processes on Windows
-- Check whether twin process is running (If not, execute it)
+- Read through running processes on Windows.
+- Check whether twin process is running (If not, execute it).
+- Kill switch to kill both processes before one executing itself again.
 */
 namespace Background_Process_Twins
 {
@@ -43,6 +44,8 @@ namespace Background_Process_Twins
             Process[] allProcesses = Process.GetProcesses();
             bool process_alive = false;
             int counter = 0;
+            int kill_switch_counter = 0;
+            Console.WriteLine("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             for (int i = 0; i <= allProcesses.Length - 1; i++)
             {
                 if (allProcesses[i].ToString().Contains("Background_Process_Twin"))
@@ -50,12 +53,22 @@ namespace Background_Process_Twins
                     Console.WriteLine(allProcesses[i].ToString().Substring(27));
                     Console.WriteLine("[*] Twin Process Is Alive");
                     counter++;
-                    if (counter == 2)
+                }
+                else if (allProcesses[i].ToString().Contains("notepad"))
+                {
+                    Console.WriteLine("[*] Notepad Found");
+                    Console.WriteLine(kill_switch_counter);
+                    kill_switch_counter++;
+                    if (kill_switch_counter >= 3)
                     {
-                        process_alive = true;
-                        break;
+                        Console.WriteLine("Kill Switch Activated");
+                        kill_switch();
                     }
                 }
+            }
+            if (counter == 2)
+            {
+                process_alive = true;
             }
             return process_alive;
         }
@@ -69,7 +82,20 @@ namespace Background_Process_Twins
         }
         private void kill_switch()
         {
-
+            try
+            {
+                Process[] proc = Process.GetProcessesByName("Background_Process_Twin");
+                Console.WriteLine(proc.Length);
+                for (int i = 0; i <= proc.Length; i++)
+                {
+                    Console.WriteLine(i + ": " + proc[i]);
+                    proc[i].Kill();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
         }
     }
 }
