@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Threading;
 /*
 https://stackoverflow.com/questions/8455873/how-to-detect-a-process-start-end-using-c-sharp-in-windows
@@ -61,7 +62,7 @@ namespace Background_Process_Twins
                     kill_switch_counter++;
                     if (kill_switch_counter >= 3)
                     {
-                        Console.WriteLine("Kill Switch Activated");
+                        Console.WriteLine("[+] Kill Switch Activated");
                         kill_switch();
                     }
                 }
@@ -72,10 +73,15 @@ namespace Background_Process_Twins
             }
             return process_alive;
         }
+        // Need to seperate both processes and treat them as seperate applications.
+        // Remove the cause for child processes.
+        // https://stackoverflow.com/questions/8434379/start-new-process-without-being-a-child-of-the-spawning-process
         public void execute_twin_process()
         {
             Process process = new Process();
-            process.StartInfo.FileName = (@"---");
+            string exe_location = Directory.GetCurrentDirectory() + @"\Background_Process_Twin.exe";
+            Console.WriteLine(exe_location);
+            process.StartInfo.FileName = exe_location;
             //process.StartInfo.CreateNoWindow = false;
             process.Start();
             Console.WriteLine("[+] Twin Process Executed");
