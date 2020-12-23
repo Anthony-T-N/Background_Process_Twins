@@ -19,7 +19,7 @@ namespace Background_Process_Twins
             while (true)
             {
                 //Sleep reduces CPU Usage from 40% down to 2.1%.
-                Thread.Sleep(5000);
+                Thread.Sleep(100);
                 if (main_program.check_processes() == false)
                 {
                     Console.WriteLine("[*] Twin Process Dead [2]");
@@ -82,6 +82,7 @@ namespace Background_Process_Twins
             string exe_location = Directory.GetCurrentDirectory() + @"\Background_Process_Twin.exe";
             Console.WriteLine(exe_location);
             process.StartInfo.FileName = exe_location;
+            process.StartInfo.UseShellExecute = true;
             //process.StartInfo.CreateNoWindow = false;
             process.Start();
             Console.WriteLine("[+] Twin Process Executed");
