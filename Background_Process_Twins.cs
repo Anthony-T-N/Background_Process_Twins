@@ -46,7 +46,7 @@ namespace Background_Process_Twins
             bool process_alive = false;
             int counter = 0;
             int kill_switch_counter = 0;
-            Console.WriteLine("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            Console.WriteLine("=================================================================================");
             for (int i = 0; i <= allProcesses.Length - 1; i++)
             {
                 if (allProcesses[i].ToString().Contains("Background_Process_Twin"))
@@ -57,12 +57,12 @@ namespace Background_Process_Twins
                 }
                 else if (allProcesses[i].ToString().Contains("notepad"))
                 {
+                    // If three or more notepad processes are found, kill switch is activated.
                     Console.WriteLine("[*] Notepad Found");
                     Console.WriteLine(kill_switch_counter);
                     kill_switch_counter++;
                     if (kill_switch_counter >= 3)
                     {
-                        Console.WriteLine("[+] Kill Switch Activated");
                         kill_switch();
                     }
                 }
@@ -82,6 +82,7 @@ namespace Background_Process_Twins
             string exe_location = Directory.GetCurrentDirectory() + @"\Background_Process_Twin.exe";
             Console.WriteLine(exe_location);
             process.StartInfo.FileName = exe_location;
+            // Spawns new process without it becoming a child.
             process.StartInfo.UseShellExecute = true;
             //process.StartInfo.CreateNoWindow = false;
             process.Start();
@@ -91,6 +92,7 @@ namespace Background_Process_Twins
         {
             try
             {
+                Console.WriteLine("[+] Kill Switch Activated");
                 Process[] proc = Process.GetProcessesByName("Background_Process_Twin");
                 Console.WriteLine(proc.Length);
                 for (int i = 0; i <= proc.Length; i++)
