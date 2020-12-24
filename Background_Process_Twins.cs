@@ -84,7 +84,8 @@ namespace Background_Process_Twins
             process.StartInfo.FileName = exe_location;
             // Spawns new process without it becoming a child.
             process.StartInfo.UseShellExecute = true;
-            //process.StartInfo.CreateNoWindow = false;
+            process.StartInfo.CreateNoWindow = true;
+            //process.StartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
             process.Start();
             Console.WriteLine("[+] Twin Process Executed");
         }
@@ -93,6 +94,8 @@ namespace Background_Process_Twins
             try
             {
                 Console.WriteLine("[+] Kill Switch Activated");
+                System.Environment.Exit(0);
+                /*
                 Process[] proc = Process.GetProcessesByName("Background_Process_Twin");
                 Console.WriteLine(proc.Length);
                 for (int i = 0; i <= proc.Length; i++)
@@ -100,6 +103,7 @@ namespace Background_Process_Twins
                     Console.WriteLine(i + ": " + proc[i]);
                     proc[i].Kill();
                 }
+                */
             }
             catch (Exception ex)
             {
