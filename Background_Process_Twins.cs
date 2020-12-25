@@ -19,7 +19,7 @@ namespace Background_Process_Twins
             while (true)
             {
                 //Sleep reduces CPU Usage from 40% down to 2.1%.
-                Thread.Sleep(100);
+                Thread.Sleep(1000);
                 if (main_program.check_processes() == false)
                 {
                     Console.WriteLine("[*] Twin Process Dead [2]");
@@ -61,13 +61,13 @@ namespace Background_Process_Twins
                     Console.WriteLine("[*] Notepad Found");
                     Console.WriteLine(kill_switch_counter);
                     kill_switch_counter++;
-                    if (kill_switch_counter >= 3)
+                    if (kill_switch_counter >= 2)
                     {
                         kill_switch();
                     }
                 }
             }
-            if (counter == 2)
+            if (counter >= 2)
             {
                 process_alive = true;
             }
@@ -82,9 +82,14 @@ namespace Background_Process_Twins
             string exe_location = Directory.GetCurrentDirectory() + @"\Background_Process_Twin.exe";
             Console.WriteLine(exe_location);
             process.StartInfo.FileName = exe_location;
+            /*
+            process.StartInfo.FileName = @"cmd";
+            process.StartInfo.Arguments = "/C start " + exe_location;
+            */
             // Spawns new process without it becoming a child.
             process.StartInfo.UseShellExecute = true;
-            process.StartInfo.CreateNoWindow = true;
+            //process.StartInfo.CreateNoWindow = true;
+            // Treats app as background process (Hidden from taskbar).
             //process.StartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
             process.Start();
             Console.WriteLine("[+] Twin Process Executed");
