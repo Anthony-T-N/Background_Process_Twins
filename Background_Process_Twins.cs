@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Threading;
 /*
 https://stackoverflow.com/questions/8455873/how-to-detect-a-process-start-end-using-c-sharp-in-windows
@@ -13,8 +14,16 @@ namespace Background_Process_Twins
 {
     class Background_Process_Twin
     {
+        // https://stackoverflow.com/questions/48539789/pinning-to-the-taskbar-a-chained-process/58559875#58559875
+        [DllImport("shell32.dll", SetLastError = true)]
+        private static extern void SetCurrentProcessExplicitAppUserModelID([MarshalAs(UnmanagedType.LPWStr)] string AppID);
+
         static void Main(string[] args)
         {
+            Guid g = Guid.NewGuid();
+            string AppID = g.ToString();
+            SetCurrentProcessExplicitAppUserModelID(AppID);
+            Console.WriteLine(AppID);
             Background_Process_Twin main_program = new Background_Process_Twin();
             while (true)
             {
