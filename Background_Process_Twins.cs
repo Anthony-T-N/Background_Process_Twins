@@ -15,15 +15,18 @@ namespace Background_Process_Twins
     class Background_Process_Twin
     {
         // https://stackoverflow.com/questions/48539789/pinning-to-the-taskbar-a-chained-process/58559875#58559875
+        // https://stackoverflow.com/questions/34901124/how-to-group-different-apps-in-windows-task-bar
         [DllImport("shell32.dll", SetLastError = true)]
-        private static extern void SetCurrentProcessExplicitAppUserModelID([MarshalAs(UnmanagedType.LPWStr)] string AppID);
+        public static extern void SetCurrentProcessExplicitAppUserModelID(
+            [MarshalAs(UnmanagedType.LPWStr)] string AppID);
+        private static string AppID;
 
         static void Main(string[] args)
         {
-            Guid g = Guid.NewGuid();
-            string AppID = g.ToString();
+            AppID = Guid.NewGuid().ToString();
             SetCurrentProcessExplicitAppUserModelID(AppID);
             Console.WriteLine(AppID);
+            Thread.Sleep(5000);
             Background_Process_Twin main_program = new Background_Process_Twin();
             while (true)
             {
