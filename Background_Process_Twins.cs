@@ -9,6 +9,7 @@ Planning / Design
 - Read through running processes on Windows.
 - Check whether twin process is running (If not, execute it).
 - Kill switch to kill both processes before one executing itself again.
+- Prevent user from right-clicking application in taskbar and selecting "Close all Windows".
 */
 namespace Background_Process_Twins
 {
@@ -23,6 +24,8 @@ namespace Background_Process_Twins
 
         static void Main(string[] args)
         {
+            // Twin applications are grouped together in the taskbar when running.
+            // Setting different AUMID for every instance of the program that launches should ideally seperate them in the taskbar.
             AppID = Guid.NewGuid().ToString();
             SetCurrentProcessExplicitAppUserModelID(AppID);
             Console.WriteLine(AppID);
@@ -38,6 +41,7 @@ namespace Background_Process_Twins
                     main_program.execute_twin_process();
                 }
                 /*
+                // Example of practical usage (Constantly closes task manager).
                 try
                 {
                     Process[] proc = Process.GetProcessesByName("Taskmgr");
