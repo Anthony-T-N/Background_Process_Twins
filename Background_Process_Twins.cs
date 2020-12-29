@@ -15,6 +15,16 @@ namespace Background_Process_Twins
 {
     class Background_Process_Twin
     {
+        // https://social.msdn.microsoft.com/Forums/vstudio/en-US/73ba89de-bc92-44bd-81aa-462bd5ee7e46/how-to-hide-a-c-console-application-not-a-winform-app-from-taskbar?forum=windowsuidevelopment
+        [DllImport("kernel32.dll")]
+        static extern IntPtr GetConsoleWindow();
+
+        [DllImport("user32.dll")]
+        static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
+        const int SW_HIDE = 0;
+        const int SW_SHOW = 5;
+
         // https://stackoverflow.com/questions/48539789/pinning-to-the-taskbar-a-chained-process/58559875#58559875
         // https://stackoverflow.com/questions/34901124/how-to-group-different-apps-in-windows-task-bar
         [DllImport("shell32.dll", SetLastError = true)]
@@ -24,6 +34,10 @@ namespace Background_Process_Twins
 
         static void Main(string[] args)
         {
+            var handle = GetConsoleWindow();
+            // Hide
+            ShowWindow(handle, SW_HIDE);
+
             // Twin applications are grouped together in the taskbar when running.
             // Setting different AUMID for every instance of the program that launches should ideally seperate them in the taskbar.
             AppID = Guid.NewGuid().ToString();
