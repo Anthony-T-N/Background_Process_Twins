@@ -15,6 +15,7 @@ namespace Background_Process_Twins
 {
     class Background_Process_Twin
     {
+        #region Hiding console application from taskbar.
         // https://social.msdn.microsoft.com/Forums/vstudio/en-US/73ba89de-bc92-44bd-81aa-462bd5ee7e46/how-to-hide-a-c-console-application-not-a-winform-app-from-taskbar?forum=windowsuidevelopment
         [DllImport("kernel32.dll")]
         static extern IntPtr GetConsoleWindow();
@@ -24,13 +25,18 @@ namespace Background_Process_Twins
 
         const int SW_HIDE = 0;
         const int SW_SHOW = 5;
+        #endregion
 
+        #region Used to change app user model ID.
+        /*
         // https://stackoverflow.com/questions/48539789/pinning-to-the-taskbar-a-chained-process/58559875#58559875
         // https://stackoverflow.com/questions/34901124/how-to-group-different-apps-in-windows-task-bar
         [DllImport("shell32.dll", SetLastError = true)]
         public static extern void SetCurrentProcessExplicitAppUserModelID(
             [MarshalAs(UnmanagedType.LPWStr)] string AppID);
         private static string AppID;
+        */
+        #endregion
 
         static void Main(string[] args)
         {
@@ -38,12 +44,15 @@ namespace Background_Process_Twins
             // Hide
             ShowWindow(handle, SW_HIDE);
 
+            /*
             // Twin applications are grouped together in the taskbar when running.
             // Setting different AUMID for every instance of the program that launches should ideally seperate them in the taskbar.
             AppID = Guid.NewGuid().ToString();
             SetCurrentProcessExplicitAppUserModelID(AppID);
             Console.WriteLine(AppID);
             Thread.Sleep(5000);
+            */
+
             Background_Process_Twin main_program = new Background_Process_Twin();
             while (true)
             {
@@ -87,7 +96,7 @@ namespace Background_Process_Twins
                 }
                 else if (allProcesses[i].ToString().Contains("notepad"))
                 {
-                    // If three or more notepad processes are found, kill switch is activated.
+                    // If two or more notepad processes are found, kill switch is activated.
                     Console.WriteLine("[*] Notepad Found");
                     Console.WriteLine(kill_switch_counter);
                     kill_switch_counter++;
@@ -126,24 +135,8 @@ namespace Background_Process_Twins
         }
         private void kill_switch()
         {
-            try
-            {
-                Console.WriteLine("[+] Kill Switch Activated");
-                System.Environment.Exit(0);
-                /*
-                Process[] proc = Process.GetProcessesByName("Background_Process_Twin");
-                Console.WriteLine(proc.Length);
-                for (int i = 0; i <= proc.Length; i++)
-                {
-                    Console.WriteLine(i + ": " + proc[i]);
-                    proc[i].Kill();
-                }
-                */
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
+            Console.WriteLine("[+] Kill Switch Activated");
+            System.Environment.Exit(0);
         }
     }
 }
