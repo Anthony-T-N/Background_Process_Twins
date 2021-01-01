@@ -24,7 +24,7 @@ namespace Background_Process_Twins
         static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
         const int SW_HIDE = 0;
-        const int SW_SHOW = 5;
+        // const int SW_SHOW = 5;
         #endregion
 
         #region <Used to change app user model ID.>
@@ -57,14 +57,14 @@ namespace Background_Process_Twins
             Background_Process_Twin main_program = new Background_Process_Twin();
             while (true)
             {
-                //Sleep reduces CPU Usage from 40% down to 2.1%.
-                Thread.Sleep(1000);
+                Thread.Sleep(1000); // Sleep reduces CPU Usage from 40% down to 2.1%.
                 if (main_program.check_processes() == false)
                 {
                     Debug.WriteLine("[*] Twin Process Dead [2]");
                     main_program.execute_twin_process();
                 }
                 #region Example of practical usage (Continuously closes task manager).
+                /*
                 try
                 {
                     Process[] proc = Process.GetProcessesByName("Taskmgr");
@@ -79,6 +79,7 @@ namespace Background_Process_Twins
                 {
                     Debug.WriteLine(ex);
                 }
+                */
                 #endregion
             }
         }
@@ -123,10 +124,6 @@ namespace Background_Process_Twins
             string exe_location = Directory.GetCurrentDirectory() + @"\Background_Process_Twin.exe";
             Debug.WriteLine(exe_location);
             process.StartInfo.FileName = exe_location;
-            /*
-            process.StartInfo.FileName = @"cmd";
-            process.StartInfo.Arguments = "/C start " + exe_location;
-            */
             // Spawns new process without it becoming a child.
             process.StartInfo.UseShellExecute = true;
             //process.StartInfo.CreateNoWindow = true;
